@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TRIDIAL | 3D Engineering & Design</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&family=Exo+2:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --navy: #0a0e1a;
+      --navy-mid: #0d1526;
+      --navy-light: #111d35;
+      --accent: #00c8ff;
+      --accent2: #0066ff;
+      --white: #ffffff;
+      --gray: #8a9bb5;
+      --border: rgba(0,200,255,0.15);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--navy);
+      color: var(--white);
+      font-family: 'Noto Sans JP', 'Exo 2', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ─── NAVBAR ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 60px;
+      background: rgba(10,14,26,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.6rem; font-weight: 700; letter-spacing: 4px;
+      color: var(--white);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a {
+      color: var(--gray); text-decoration: none;
+      font-family: 'Exo 2', sans-serif; font-size: 0.85rem;
+      letter-spacing: 2px; text-transform: uppercase;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-cta {
+      padding: 10px 28px;
+      border: 1px solid var(--accent);
+      color: var(--accent); text-decoration: none;
+      font-family: 'Exo 2', sans-serif; font-size: 0.8rem;
+      letter-spacing: 2px; text-transform: uppercase;
+      transition: all 0.3s;
+    }
+    .nav-cta:hover { background: var(--accent); color: var(--navy); }
+
+    /* ─── HERO ─── */
+    #hero {
+      position: relative; height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      overflow: hidden;
+      background: radial-gradient(ellipse at 50% 60%, #0d2040 0%, var(--navy) 70%);
+    }
+
+    /* grid lines */
+    #hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,200,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,200,255,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: gridMove 20s linear infinite;
+    }
+    @keyframes gridMove { from { transform: translateY(0); } to { transform: translateY(60px); } }
+
+    /* glow orb */
+    #hero::after {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(0,102,255,0.12) 0%, transparent 70%);
+      top: 50%; left: 50%; transform: translate(-50%, -50%);
+      animation: pulse 4s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+      50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+    }
+
+    .hero-content {
+      position: relative; z-index: 2;
+      text-align: center;
+    }
+
+    /* ── SVG Logo animation ── */
+    #hero-logo-wrap {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 40px;
+    }
+
+    /* TRIDIAL text */
+    .hero-brand {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(64px, 10vw, 120px);
+      font-weight: 700;
+      letter-spacing: 16px;
+      color: var(--white);
+      opacity: 0;
+      animation: fadeUp 1.2s ease forwards 0.5s;
+      position: relative;
+      text-shadow: 0 0 60px rgba(0,200,255,0.3);
+    }
+
+    /* paper plane SVG */
+    .paper-plane {
+      position: absolute;
+      top: -10px; left: -20px;
+      width: 60px; height: 60px;
+      opacity: 0;
+      animation: flyIn 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards 1.4s;
+    }
+
+    @keyframes flyIn {
+      0% { opacity: 0; transform: translate(-200px, 150px) rotate(-25deg) scale(0.5); }
+      60% { opacity: 1; transform: translate(10px, -10px) rotate(-15deg) scale(1.1); }
+      100% { opacity: 1; transform: translate(0, 0) rotate(-20deg) scale(1); }
+    }
+
+    .hero-sub {
+      font-family: 'Exo 2', sans-serif;
+      font-size: clamp(10px, 2vw, 14px);
+      letter-spacing: 8px;
+      color: var(--accent);
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeUp 1s ease forwards 2s;
+      margin-bottom: 48px;
+    }
+
+    .hero-catch {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: clamp(18px, 3vw, 28px);
+      font-weight: 300;
+      color: rgba(255,255,255,0.85);
+      opacity: 0;
+      animation: fadeUp 1s ease forwards 2.6s;
+      margin-bottom: 60px;
+      letter-spacing: 2px;
+    }
+
+    .hero-catch strong {
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    .hero-btns {
+      display: flex; gap: 20px; justify-content: center;
+      opacity: 0;
+      animation: fadeUp 1s ease forwards 3s;
+    }
+
+    .btn-primary {
+      padding: 16px 48px;
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      color: var(--white); text-decoration: none;
+      font-family: 'Exo 2', sans-serif; font-weight: 600;
+      font-size: 0.9rem; letter-spacing: 3px; text-transform: uppercase;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    .btn-primary:hover { opacity: 0.85; transform: translateY(-2px); }
+
+    .btn-outline {
+      padding: 16px 48px;
+      border: 1px solid rgba(255,255,255,0.3);
+      color: var(--white); text-decoration: none;
+      font-family: 'Exo 2', sans-serif; font-weight: 400;
+      font-size: 0.9rem; letter-spacing: 3px; text-transform: uppercase;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+      transition: border-color 0.3s, color 0.3s, transform 0.3s;
+    }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+    .scroll-indicator {
+      position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      opacity: 0; animation: fadeUp 1s ease forwards 3.5s;
+    }
+    .scroll-indicator span {
+      font-family: 'Exo 2', sans-serif; font-size: 0.65rem;
+      letter-spacing: 3px; color: var(--gray); text-transform: uppercase;
+    }
+    .scroll-line {
+      width: 1px; height: 60px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.3; } 50% { opacity: 1; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ─── SECTION BASE ─── */
+    section { padding: 100px 60px; }
+    .section-label {
+      font-family: 'Exo 2', sans-serif;
+      font-size: 0.75rem; letter-spacing: 5px; color: var(--accent);
+      text-transform: uppercase; margin-bottom: 16px;
+    }
+    .section-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(32px, 5vw, 52px); font-weight: 700;
+      letter-spacing: 3px; margin-bottom: 24px;
+    }
+    .section-desc {
+      color: var(--gray); line-height: 1.9;
+      font-weight: 300; max-width: 600px;
+      font-size: 0.95rem;
+    }
+    .divider {
+      width: 60px; height: 2px;
+      background: linear-gradient(to right, var(--accent), transparent);
+      margin: 20px 0 40px;
+    }
+
+    /* ─── ABOUT ─── */
+    #about {
+      background: var(--navy-mid);
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+      align-items: center;
+    }
+    .about-stats {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+    }
+    .stat-box {
+      background: var(--navy-light);
+      padding: 40px 30px;
+      border: 1px solid var(--border);
+      position: relative; overflow: hidden;
+      transition: border-color 0.3s;
+    }
+    .stat-box::after {
+      content: '';
+      position: absolute; bottom: 0; left: 0;
+      width: 100%; height: 2px;
+      background: linear-gradient(to right, var(--accent), transparent);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.4s;
+    }
+    .stat-box:hover::after { transform: scaleX(1); }
+    .stat-box:hover { border-color: var(--accent); }
+    .stat-num {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 3rem; font-weight: 700; color: var(--accent);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.8rem; color: var(--gray);
+      margin-top: 8px; letter-spacing: 1px;
+    }
+
+    /* ─── SERVICES ─── */
+    #services { background: var(--navy); }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2px; margin-top: 60px;
+    }
+    .service-card {
+      background: var(--navy-light);
+      padding: 48px 36px;
+      border: 1px solid var(--border);
+      position: relative; overflow: hidden;
+      transition: transform 0.3s, border-color 0.3s;
+      cursor: default;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: linear-gradient(135deg, rgba(0,200,255,0.04), transparent);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .service-card:hover::before { opacity: 1; }
+    .service-card:hover { transform: translateY(-4px); border-color: rgba(0,200,255,0.4); }
+    .service-icon {
+      width: 52px; height: 52px; margin-bottom: 28px;
+      color: var(--accent);
+    }
+    .service-num {
+      position: absolute; top: 24px; right: 24px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 4rem; font-weight: 700;
+      color: rgba(0,200,255,0.04);
+      line-height: 1;
+    }
+    .service-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.4rem; font-weight: 700;
+      letter-spacing: 2px; margin-bottom: 16px;
+    }
+    .service-desc { color: var(--gray); font-size: 0.88rem; line-height: 1.8; }
+
+    /* ─── CAD TOOLS ─── */
+    #tools {
+      background: var(--navy-mid);
+      text-align: center;
+    }
+    .tools-grid {
+      display: flex; justify-content: center;
+      gap: 4px; margin-top: 60px; flex-wrap: wrap;
+    }
+    .tool-card {
+      background: var(--navy-light);
+      border: 1px solid var(--border);
+      padding: 48px 56px;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 20px;
+      transition: border-color 0.3s, transform 0.3s;
+      min-width: 220px;
+    }
+    .tool-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+    .tool-icon {
+      width: 64px; height: 64px;
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.2rem; font-weight: 700; color: var(--white);
+      letter-spacing: 1px;
+    }
+    .tool-name {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.3rem; font-weight: 700;
+      letter-spacing: 3px;
+    }
+    .tool-type { color: var(--gray); font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; }
+
+    /* ─── WORKFLOW ─── */
+    #workflow { background: var(--navy); }
+    .steps {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0; margin-top: 60px;
+      position: relative;
+    }
+    .steps::before {
+      content: '';
+      position: absolute; top: 32px; left: 0; right: 0; height: 1px;
+      background: linear-gradient(to right, transparent, var(--accent), transparent);
+    }
+    .step { padding: 0 30px; text-align: center; }
+    .step-num {
+      width: 64px; height: 64px; margin: 0 auto 28px;
+      border: 1px solid var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.6rem; font-weight: 700; color: var(--accent);
+      background: var(--navy);
+      position: relative; z-index: 1;
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    }
+    .step-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.1rem; letter-spacing: 2px; margin-bottom: 12px;
+    }
+    .step-desc { color: var(--gray); font-size: 0.82rem; line-height: 1.7; }
+
+    /* ─── CONTACT ─── */
+    #contact {
+      background: var(--navy-mid);
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+      align-items: start;
+    }
+    .contact-form {
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .form-group label {
+      font-family: 'Exo 2', sans-serif;
+      font-size: 0.75rem; letter-spacing: 2px; color: var(--gray);
+      text-transform: uppercase;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      background: var(--navy);
+      border: 1px solid var(--border);
+      color: var(--white);
+      padding: 14px 18px;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.3s;
+      -webkit-appearance: none;
+    }
+    .form-group select option { background: var(--navy); }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus { border-color: var(--accent); }
+    .form-group textarea { resize: vertical; min-height: 140px; }
+    .form-submit {
+      margin-top: 8px;
+      padding: 18px;
+      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      color: var(--white); border: none; cursor: pointer;
+      font-family: 'Exo 2', sans-serif; font-size: 0.9rem;
+      font-weight: 600; letter-spacing: 4px; text-transform: uppercase;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    .form-submit:hover { opacity: 0.85; transform: translateY(-2px); }
+
+    .contact-info { padding-top: 20px; }
+    .info-item {
+      display: flex; gap: 20px; align-items: flex-start;
+      margin-bottom: 36px;
+    }
+    .info-icon {
+      width: 48px; height: 48px; flex-shrink: 0;
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--accent);
+    }
+    .info-label {
+      font-family: 'Exo 2', sans-serif;
+      font-size: 0.7rem; letter-spacing: 3px; color: var(--gray);
+      text-transform: uppercase; margin-bottom: 6px;
+    }
+    .info-value { font-size: 0.9rem; color: var(--white); }
+
+    /* success message */
+    .form-success {
+      display: none;
+      padding: 20px;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-family: 'Exo 2', sans-serif;
+      letter-spacing: 2px;
+      text-align: center;
+      margin-top: 16px;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--navy);
+      border-top: 1px solid var(--border);
+      padding: 48px 60px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-logo {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.4rem; font-weight: 700; letter-spacing: 4px;
+    }
+    .footer-logo span { color: var(--accent); }
+    .footer-copy {
+      color: var(--gray); font-size: 0.75rem; letter-spacing: 1px;
+    }
+    .footer-links { display: flex; gap: 28px; }
+    .footer-links a {
+      color: var(--gray); text-decoration: none;
+      font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase;
+      transition: color 0.3s;
+    }
+    .footer-links a:hover { color: var(--accent); }
+
+    /* ─── REVEAL ANIMATION ─── */
+    .reveal {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      section { padding: 80px 24px; }
+      #about, #contact { grid-template-columns: 1fr; gap: 48px; }
+      footer { flex-direction: column; gap: 20px; text-align: center; }
+      .steps::before { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <a class="nav-logo" href="#"><span>T</span>RIDIAL</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#tools">Tools</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a class="nav-cta" href="#contact">お問い合わせ</a>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section id="hero">
+  <div class="hero-content">
+    <div id="hero-logo-wrap">
+      <!-- Paper airplane SVG -->
+      <svg class="paper-plane" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="0,30 60,0 42,60" fill="white" opacity="0.9"/>
+        <polygon points="0,30 60,0 30,36" fill="rgba(0,200,255,0.6)"/>
+        <line x1="42" y1="60" x2="30" y2="36" stroke="rgba(0,200,255,0.4)" stroke-width="1"/>
+      </svg>
+      <div class="hero-brand">TRIDIAL</div>
+    </div>
+    <div class="hero-sub">3D Engineering &amp; Design</div>
+    <div class="hero-catch">角度を変えれば、<strong>答えが見える</strong></div>
+    <div class="hero-btns">
+      <a class="btn-primary" href="#services">サービスを見る</a>
+      <a class="btn-outline" href="#contact">無料相談</a>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- ─── ABOUT ─── -->
+<section id="about">
+  <div class="reveal">
+    <div class="section-label">About TRIDIAL</div>
+    <h2 class="section-title">3Dの力で、<br>ものづくりを加速する</h2>
+    <div class="divider"></div>
+    <p class="section-desc">
+      TRIDIALは中小企業・個人事業主の機械設計課題を3D技術で解決する専門スタジオです。装置・治具設計からプロダクトデザイン、3Dプリントまでをワンストップで対応。業界トップレベルのCADツールを駆使し、お客様のアイデアを素早く形にします。
+    </p>
+    <br><br>
+    <p class="section-desc">
+      複雑な形状も、難しい制約も——視点を変えることで、必ず答えは見えてきます。
+    </p>
+  </div>
+  <div class="about-stats reveal">
+    <div class="stat-box">
+      <div class="stat-num">3</div>
+      <div class="stat-label">対応CADソフト</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">5+</div>
+      <div class="stat-label">対応サービス領域</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">短納期</div>
+      <div class="stat-label">スピード対応</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">個別</div>
+      <div class="stat-label">完全オーダーメイド</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SERVICES ─── -->
+<section id="services">
+  <div class="reveal" style="text-align:center; max-width:none;">
+    <div class="section-label" style="display:inline-block;">Services</div>
+    <h2 class="section-title">提供サービス</h2>
+    <div class="divider" style="margin:20px auto 0;"></div>
+  </div>
+  <div class="services-grid">
+    <div class="service-card reveal">
+      <div class="service-num">01</div>
+      <svg class="service-icon" viewBox="0 0 52 52" fill="none">
+        <rect x="4" y="14" width="44" height="30" rx="1" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M4 22h44M16 14V8M36 14V8" stroke="currentColor" stroke-width="1.5"/>
+        <rect x="12" y="28" width="8" height="10" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M26 30h12M26 36h8" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      <div class="service-title">装置・治具設計</div>
+      <p class="service-desc">生産ラインの自動化装置、検査冶具、専用工具など、用途に合わせた機械設計を提供します。機能性と製造コストを両立した実用的な設計が強みです。</p>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-num">02</div>
+      <svg class="service-icon" viewBox="0 0 52 52" fill="none">
+        <path d="M8 44V12l10-8h26v40H8z" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M8 12h10V4" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M16 22h22M16 30h22M16 38h12" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      <div class="service-title">図面作成</div>
+      <p class="service-desc">JIS規格に準拠した製作図・組立図・部品図を作成します。加工指示・公差・溶接記号など製造現場で即使用できる品質の図面を提供します。</p>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-num">03</div>
+      <svg class="service-icon" viewBox="0 0 52 52" fill="none">
+        <path d="M26 6l20 14v16L26 50 6 36V20L26 6z" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M26 6v44M6 20l20 14 20-14" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      <div class="service-title">プロダクトデザイン</div>
+      <p class="service-desc">機能美を追求したプロダクトデザイン。工業製品から消費者向け製品まで、使いやすさとブランド価値を高めるデザインを提案します。</p>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-num">04</div>
+      <svg class="service-icon" viewBox="0 0 52 52" fill="none">
+        <path d="M10 38L26 10l16 28H10z" stroke="currentColor" stroke-width="1.5"/>
+        <circle cx="26" cy="30" r="8" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M26 22v-8M26 38v4M18 30H10M34 30h8" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
+      </svg>
+      <div class="service-title">3Dモデル作成</div>
+      <p class="service-desc">既存製品のリバースエンジニアリングから新規形状の3Dモデリングまで対応。プレゼン用の高品質レンダリングも提供可能です。</p>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-num">05</div>
+      <svg class="service-icon" viewBox="0 0 52 52" fill="none">
+        <rect x="10" y="26" width="32" height="18" rx="1" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M18 26V20a8 8 0 0116 0v6" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M20 34h4M28 34h4M20 38h2" stroke="currentColor" stroke-width="1.5"/>
+      </svg>
+      <div class="service-title">3Dプリント</div>
+      <p class="service-desc">試作品・治具・最終部品まで3Dプリントで対応。FDM・樹脂素材への対応はもちろん、プリント用データ最適化まで含めてサポートします。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CAD TOOLS ─── -->
+<section id="tools">
+  <div class="reveal">
+    <div class="section-label">Technology</div>
+    <h2 class="section-title">使用CADツール</h2>
+    <div class="divider" style="margin: 20px auto;"></div>
+    <p class="section-desc" style="margin: 0 auto;">業界標準のCADソフトウェアを複数習熟しており、お客様の環境に合わせたデータ形式で納品が可能です。</p>
+  </div>
+  <div class="tools-grid reveal">
+    <div class="tool-card">
+      <div class="tool-icon">TS</div>
+      <div class="tool-name">TopSolid</div>
+      <div class="tool-type">Manufacturing CAD</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">SW</div>
+      <div class="tool-name">SolidWorks</div>
+      <div class="tool-type">Parametric CAD</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-icon">F3</div>
+      <div class="tool-name">Fusion 360</div>
+      <div class="tool-type">Cloud CAD/CAM</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── WORKFLOW ─── -->
+<section id="workflow">
+  <div class="reveal" style="text-align:center;">
+    <div class="section-label">Process</div>
+    <h2 class="section-title">対応フロー</h2>
+    <div class="divider" style="margin: 20px auto;"></div>
+  </div>
+  <div class="steps">
+    <div class="step reveal">
+      <div class="step-num">01</div>
+      <div class="step-title">お問い合わせ</div>
+      <p class="step-desc">フォームまたはメールでご相談内容をお送りください。24時間以内に返信します。</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">02</div>
+      <div class="step-title">ヒアリング</div>
+      <p class="step-desc">要件・仕様・スケジュール・予算などを詳しくヒアリングします。</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">03</div>
+      <div class="step-title">提案・見積</div>
+      <p class="step-desc">最適な設計アプローチと納期・費用の見積もりを提出します。</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">04</div>
+      <div class="step-title">設計・制作</div>
+      <p class="step-desc">進捗を共有しながら設計を進めます。途中フィードバックも歓迎です。</p>
+    </div>
+    <div class="step reveal">
+      <div class="step-num">05</div>
+      <div class="step-title">納品</div>
+      <p class="step-desc">図面・3Dデータを指定形式で納品。アフターフォローも対応します。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CONTACT ─── -->
+<section id="contact">
+  <div class="reveal">
+    <div class="section-label">Contact</div>
+    <h2 class="section-title">お問い合わせ</h2>
+    <div class="divider"></div>
+    <p class="section-desc">設計のご相談、お見積もりはお気軽にどうぞ。内容を確認後、担当者より24時間以内にご連絡します。</p>
+    <br><br>
+    <div class="info-item">
+      <div class="info-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M4 4h16v16H4z" rx="2"/><path d="M4 8l8 5 8-5"/>
+        </svg>
+      </div>
+      <div>
+        <div class="info-label">Email</div>
+        <div class="info-value">contact@tridial.jp</div>
+      </div>
+    </div>
+    <div class="info-item">
+      <div class="info-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/>
+        </svg>
+      </div>
+      <div>
+        <div class="info-label">対応エリア</div>
+        <div class="info-value">全国対応（リモート）</div>
+      </div>
+    </div>
+    <div class="info-item">
+      <div class="info-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+        </svg>
+      </div>
+      <div>
+        <div class="info-label">返信時間</div>
+        <div class="info-value">24時間以内（平日）</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="reveal">
+    <form class="contact-form" id="contactForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label>お名前 *</label>
+          <input type="text" name="name" required placeholder="山田 太郎">
+        </div>
+        <div class="form-group">
+          <label>会社名</label>
+          <input type="text" name="company" placeholder="株式会社〇〇">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>メールアドレス *</label>
+        <input type="email" name="email" required placeholder="example@company.co.jp">
+      </div>
+      <div class="form-group">
+        <label>お問い合わせ種別</label>
+        <select name="type">
+          <option value="">選択してください</option>
+          <option>装置・治具設計</option>
+          <option>図面作成</option>
+          <option>プロダクトデザイン</option>
+          <option>3Dモデル作成</option>
+          <option>3Dプリント</option>
+          <option>その他</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>お問い合わせ内容 *</label>
+        <textarea name="message" required placeholder="ご依頼内容・仕様・納期などをお知らせください。"></textarea>
+      </div>
+      <button type="submit" class="form-submit">送信する →</button>
+      <div class="form-success" id="formSuccess">
+        お問い合わせを受け付けました。担当者より連絡いたします。
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-logo"><span>T</span>RIDIAL</div>
+  <div class="footer-copy">© 2024 TRIDIAL 3D Engineering & Design. All rights reserved.</div>
+  <div class="footer-links">
+    <a href="#about">About</a>
+    <a href="#services">Services</a>
+    <a href="#contact">Contact</a>
+  </div>
+</footer>
+
+<script>
+  // ─── Reveal on scroll ───
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 80);
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  // ─── Nav shrink on scroll ───
+  window.addEventListener('scroll', () => {
+    const nav = document.querySelector('nav');
+    nav.style.padding = window.scrollY > 50 ? '12px 60px' : '20px 60px';
+  });
+
+  // ─── Contact form submit ───
+  document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const btn = this.querySelector('.form-submit');
+    btn.textContent = '送信中...';
+    btn.disabled = true;
+    setTimeout(() => {
+      document.getElementById('formSuccess').style.display = 'block';
+      btn.style.display = 'none';
+      this.reset();
+    }, 1200);
+  });
+</script>
+</body>
+</html>
