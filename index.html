@@ -334,34 +334,123 @@
 
     /* ─── FLOW ─── */
     #flow {
-      padding: 120px 60px;
+      padding: 140px 60px;
       background: var(--bg-dark);
+      overflow: hidden;
+      position: relative;
+    }
+    #flow::before {
+      content: 'PROCESS';
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(80px, 14vw, 180px);
+      font-weight: 700; letter-spacing: 0.3em;
+      color: rgba(255,255,255,0.025);
+      white-space: nowrap; pointer-events: none;
+      user-select: none;
     }
     #flow .label { color: rgba(255,255,255,0.3); }
     #flow .heading-lg { color: #fff; }
-    .flow-steps {
+
+    .flow-cards {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 2px;
       margin-top: 80px;
-      border-top: 1px solid rgba(255,255,255,0.1);
+      position: relative;
     }
-    .flow-step {
-      display: grid; grid-template-columns: 80px 1fr 1fr;
-      gap: 60px; align-items: start;
-      padding: 48px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
+    /* connecting line */
+    .flow-cards::before {
+      content: '';
+      position: absolute;
+      top: 52px; left: 10%; right: 10%;
+      height: 1px;
+      background: linear-gradient(to right,
+        transparent 0%,
+        rgba(255,255,255,0.15) 10%,
+        rgba(255,255,255,0.15) 90%,
+        transparent 100%
+      );
+      z-index: 0;
     }
-    .flow-step-num {
+
+    .flow-card {
+      position: relative; z-index: 1;
+      padding: 0 24px 48px;
+      display: flex; flex-direction: column;
+      align-items: center; text-align: center;
+      cursor: default;
+    }
+    /* diamond node */
+    .flow-card-node {
+      width: 24px; height: 24px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.2);
+      transform: rotate(45deg);
+      margin-bottom: 40px;
+      position: relative;
+      transition: background 0.4s, border-color 0.4s;
+      flex-shrink: 0;
+    }
+    .flow-card:hover .flow-card-node {
+      background: rgba(255,255,255,0.9);
+      border-color: rgba(255,255,255,0.9);
+    }
+    /* dot inside diamond */
+    .flow-card-node::after {
+      content: '';
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%) rotate(-45deg);
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.6);
+      transition: background 0.4s;
+    }
+    .flow-card:hover .flow-card-node::after {
+      background: var(--bg-dark);
+    }
+
+    .flow-card-num {
       font-family: 'Inter', sans-serif;
-      font-size: 0.75rem; letter-spacing: 2px; color: rgba(255,255,255,0.3);
-      padding-top: 4px;
+      font-size: 0.65rem; letter-spacing: 3px;
+      color: rgba(255,255,255,0.2);
+      margin-bottom: 16px;
+      transition: color 0.4s;
     }
-    .flow-step-title {
+    .flow-card:hover .flow-card-num { color: rgba(255,255,255,0.5); }
+
+    .flow-card-title {
       font-family: 'Rajdhani', sans-serif;
-      font-size: 1.3rem; font-weight: 600;
-      letter-spacing: 2px; color: #fff;
+      font-size: 1.15rem; font-weight: 600;
+      letter-spacing: 3px; color: rgba(255,255,255,0.7);
+      margin-bottom: 16px;
+      transition: color 0.4s;
     }
-    .flow-step-desc {
-      font-size: 0.85rem; line-height: 1.9;
-      color: rgba(255,255,255,0.45);
+    .flow-card:hover .flow-card-title { color: #fff; }
+
+    .flow-card-desc {
+      font-size: 0.78rem; line-height: 1.9;
+      color: rgba(255,255,255,0.25);
+      transition: color 0.4s;
+      max-width: 180px;
+    }
+    .flow-card:hover .flow-card-desc { color: rgba(255,255,255,0.55); }
+
+    /* active glow on hover */
+    .flow-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%; transform: translateX(-50%);
+      width: 1px; height: 0;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.3), transparent);
+      transition: height 0.4s ease;
+    }
+    .flow-card:hover::after { height: 100%; }
+
+    @media (max-width: 900px) {
+      .flow-cards { grid-template-columns: 1fr 1fr; gap: 2px; }
+      .flow-cards::before { display: none; }
     }
 
     /* ─── CONTACT ─── */
@@ -646,31 +735,36 @@
       <div class="label">Process</div>
       <div class="heading-lg" style="color:#fff;">対応フロー</div>
     </div>
-    <div class="flow-steps">
-      <div class="flow-step reveal">
-        <div class="flow-step-num">01</div>
-        <div class="flow-step-title">お問い合わせ</div>
-        <div class="flow-step-desc">フォームまたはメールでご相談内容をお送りください。24時間以内に返信します。</div>
+    <div class="flow-cards">
+      <div class="flow-card reveal">
+        <div class="flow-card-node"></div>
+        <div class="flow-card-num">01</div>
+        <div class="flow-card-title">お問い合わせ</div>
+        <p class="flow-card-desc">フォームまたはメールでご相談内容をお送りください。24時間以内に返信します。</p>
       </div>
-      <div class="flow-step reveal">
-        <div class="flow-step-num">02</div>
-        <div class="flow-step-title">ヒアリング</div>
-        <div class="flow-step-desc">要件・仕様・スケジュール・予算などを詳しくヒアリングします。</div>
+      <div class="flow-card reveal">
+        <div class="flow-card-node"></div>
+        <div class="flow-card-num">02</div>
+        <div class="flow-card-title">ヒアリング</div>
+        <p class="flow-card-desc">要件・仕様・スケジュール・予算などを詳しくヒアリングします。</p>
       </div>
-      <div class="flow-step reveal">
-        <div class="flow-step-num">03</div>
-        <div class="flow-step-title">提案・見積</div>
-        <div class="flow-step-desc">最適な設計アプローチと納期・費用の見積もりを提出します。</div>
+      <div class="flow-card reveal">
+        <div class="flow-card-node"></div>
+        <div class="flow-card-num">03</div>
+        <div class="flow-card-title">提案・見積</div>
+        <p class="flow-card-desc">最適な設計アプローチと納期・費用の見積もりを提出します。</p>
       </div>
-      <div class="flow-step reveal">
-        <div class="flow-step-num">04</div>
-        <div class="flow-step-title">設計・制作</div>
-        <div class="flow-step-desc">進捗を共有しながら設計を進めます。途中フィードバックも歓迎です。</div>
+      <div class="flow-card reveal">
+        <div class="flow-card-node"></div>
+        <div class="flow-card-num">04</div>
+        <div class="flow-card-title">設計・制作</div>
+        <p class="flow-card-desc">進捗を共有しながら設計を進めます。途中フィードバックも歓迎です。</p>
       </div>
-      <div class="flow-step reveal">
-        <div class="flow-step-num">05</div>
-        <div class="flow-step-title">納品</div>
-        <div class="flow-step-desc">図面・3Dデータを指定形式で納品。アフターフォローも対応します。</div>
+      <div class="flow-card reveal">
+        <div class="flow-card-node"></div>
+        <div class="flow-card-num">05</div>
+        <div class="flow-card-title">納品</div>
+        <p class="flow-card-desc">図面・3Dデータを指定形式で納品。アフターフォローも対応します。</p>
       </div>
     </div>
   </div>
