@@ -4,821 +4,842 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TRIDIAL | 3D Engineering & Design</title>
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&family=Exo+2:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Noto+Sans+JP:wght@300;400;500&family=Rajdhani:wght@500;600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      --navy: #0a0e1a;
-      --navy-mid: #0d1526;
-      --navy-light: #111d35;
-      --accent: #00c8ff;
-      --accent2: #0066ff;
-      --white: #ffffff;
-      --gray: #8a9bb5;
-      --border: rgba(0,200,255,0.15);
+      --black: #111111;
+      --dark: #1a1a1a;
+      --mid: #555555;
+      --light: #999999;
+      --border: #e0e0e0;
+      --bg: #ffffff;
+      --bg-off: #f8f8f6;
+      --bg-dark: #111111;
+      --accent: #1a3a5c;
     }
 
     html { scroll-behavior: smooth; }
 
     body {
-      background: var(--navy);
-      color: var(--white);
-      font-family: 'Noto Sans JP', 'Exo 2', sans-serif;
+      background: var(--bg);
+      color: var(--black);
+      font-family: 'Noto Sans JP', sans-serif;
+      font-weight: 300;
       overflow-x: hidden;
     }
 
-    /* ─── NAVBAR ─── */
+    /* ─── NAVIGATION ─── */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       display: flex; align-items: center; justify-content: space-between;
-      padding: 20px 60px;
-      background: rgba(10,14,26,0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
+      padding: 28px 60px;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.4s, padding 0.4s;
+    }
+    nav.scrolled {
+      border-bottom-color: var(--border);
+      padding: 18px 60px;
     }
     .nav-logo {
       font-family: 'Rajdhani', sans-serif;
-      font-size: 1.6rem; font-weight: 700; letter-spacing: 4px;
-      color: var(--white);
-      text-decoration: none;
+      font-size: 1.5rem; font-weight: 700; letter-spacing: 5px;
+      color: var(--black); text-decoration: none;
     }
-    .nav-logo span { color: var(--accent); }
-    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links { display: flex; gap: 40px; list-style: none; }
     .nav-links a {
-      color: var(--gray); text-decoration: none;
-      font-family: 'Exo 2', sans-serif; font-size: 0.85rem;
-      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--mid); text-decoration: none;
+      font-size: 0.78rem; letter-spacing: 2px; text-transform: uppercase;
+      font-family: 'Inter', sans-serif; font-weight: 400;
       transition: color 0.3s;
+      position: relative;
     }
-    .nav-links a:hover { color: var(--accent); }
-    .nav-cta {
-      padding: 10px 28px;
-      border: 1px solid var(--accent);
-      color: var(--accent); text-decoration: none;
-      font-family: 'Exo 2', sans-serif; font-size: 0.8rem;
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 1px; background: var(--black);
+      transition: width 0.3s;
+    }
+    .nav-links a:hover { color: var(--black); }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-contact {
+      font-family: 'Inter', sans-serif; font-size: 0.75rem;
       letter-spacing: 2px; text-transform: uppercase;
-      transition: all 0.3s;
+      color: var(--black); text-decoration: none;
+      border-bottom: 1px solid var(--black);
+      padding-bottom: 2px;
+      transition: opacity 0.3s;
     }
-    .nav-cta:hover { background: var(--accent); color: var(--navy); }
+    .nav-contact:hover { opacity: 0.5; }
 
     /* ─── HERO ─── */
     #hero {
-      position: relative; height: 100vh;
+      height: 100vh; min-height: 680px;
       display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
+      justify-content: flex-end;
+      padding: 0 60px 80px;
+      position: relative;
       overflow: hidden;
-      background: radial-gradient(ellipse at 50% 60%, #0d2040 0%, var(--navy) 70%);
+      background: var(--bg-dark);
     }
 
-    /* grid lines */
-    #hero::before {
-      content: '';
+    /* animated geometric background */
+    .hero-bg {
       position: absolute; inset: 0;
-      background-image:
-        linear-gradient(rgba(0,200,255,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,200,255,0.04) 1px, transparent 1px);
-      background-size: 60px 60px;
-      animation: gridMove 20s linear infinite;
+      background: #0a0a0a;
     }
-    @keyframes gridMove { from { transform: translateY(0); } to { transform: translateY(60px); } }
+    .hero-bg canvas {
+      position: absolute; inset: 0;
+      opacity: 0.6;
+    }
 
-    /* glow orb */
-    #hero::after {
-      content: '';
+    /* hero logo center */
+    .hero-logo-center {
       position: absolute;
-      width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(0,102,255,0.12) 0%, transparent 70%);
-      top: 50%; left: 50%; transform: translate(-50%, -50%);
-      animation: pulse 4s ease-in-out infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
-      50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
-    }
-
-    .hero-content {
-      position: relative; z-index: 2;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -52%);
       text-align: center;
+      z-index: 2;
     }
 
-    /* ── SVG Logo animation ── */
-    #hero-logo-wrap {
-      position: relative;
-      display: inline-block;
-      margin-bottom: 40px;
-    }
-
-    /* TRIDIAL text */
-    .hero-brand {
+    .hero-brand-text {
       font-family: 'Rajdhani', sans-serif;
-      font-size: clamp(64px, 10vw, 120px);
+      font-size: clamp(72px, 11vw, 140px);
       font-weight: 700;
-      letter-spacing: 16px;
-      color: var(--white);
+      letter-spacing: 20px;
+      color: #fff;
       opacity: 0;
-      animation: fadeUp 1.2s ease forwards 0.5s;
+      animation: heroFadeUp 1.4s cubic-bezier(0.16,1,0.3,1) forwards 0.3s;
       position: relative;
-      text-shadow: 0 0 60px rgba(0,200,255,0.3);
+      text-indent: 20px;
     }
 
-    /* paper plane SVG */
-    .paper-plane {
+    /* paper plane */
+    .hero-plane {
       position: absolute;
-      top: -10px; left: -20px;
-      width: 60px; height: 60px;
+      top: -8px; left: 4px;
+      width: 52px; height: 52px;
       opacity: 0;
-      animation: flyIn 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards 1.4s;
+      animation: planeIn 1.6s cubic-bezier(0.16,1,0.3,1) forwards 1.2s;
     }
 
-    @keyframes flyIn {
-      0% { opacity: 0; transform: translate(-200px, 150px) rotate(-25deg) scale(0.5); }
-      60% { opacity: 1; transform: translate(10px, -10px) rotate(-15deg) scale(1.1); }
-      100% { opacity: 1; transform: translate(0, 0) rotate(-20deg) scale(1); }
+    @keyframes planeIn {
+      0%   { opacity:0; transform: translate(-300px, 200px) rotate(-20deg) scale(0.4); }
+      70%  { opacity:1; transform: translate(4px, -6px) rotate(-16deg) scale(1.05); }
+      100% { opacity:1; transform: translate(0,0) rotate(-18deg) scale(1); }
     }
 
-    .hero-sub {
-      font-family: 'Exo 2', sans-serif;
-      font-size: clamp(10px, 2vw, 14px);
-      letter-spacing: 8px;
-      color: var(--accent);
+    .hero-sub-text {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(9px, 1.2vw, 11px);
+      letter-spacing: 6px;
+      color: rgba(255,255,255,0.45);
       text-transform: uppercase;
       opacity: 0;
-      animation: fadeUp 1s ease forwards 2s;
-      margin-bottom: 48px;
+      animation: heroFadeUp 1s ease forwards 1.6s;
+      margin-top: 12px;
     }
 
+    /* hero bottom copy */
+    .hero-bottom {
+      position: relative; z-index: 2;
+      display: flex; justify-content: space-between; align-items: flex-end;
+    }
     .hero-catch {
+      opacity: 0;
+      animation: heroFadeUp 1s ease forwards 2s;
+    }
+    .hero-catch-jp {
       font-family: 'Noto Sans JP', sans-serif;
-      font-size: clamp(18px, 3vw, 28px);
+      font-size: clamp(18px, 2.5vw, 26px);
       font-weight: 300;
-      color: rgba(255,255,255,0.85);
+      color: rgba(255,255,255,0.9);
+      letter-spacing: 3px;
+      line-height: 1.6;
+    }
+    .hero-catch-en {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem; font-weight: 300;
+      letter-spacing: 3px;
+      color: rgba(255,255,255,0.35);
+      margin-top: 8px;
+      text-transform: uppercase;
+    }
+    .hero-scroll {
       opacity: 0;
-      animation: fadeUp 1s ease forwards 2.6s;
-      margin-bottom: 60px;
-      letter-spacing: 2px;
+      animation: heroFadeUp 1s ease forwards 2.4s;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+    }
+    .hero-scroll span {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase;
+      color: rgba(255,255,255,0.3); writing-mode: vertical-rl;
+    }
+    .hero-scroll-line {
+      width: 1px; height: 80px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.4), transparent);
+      animation: scrollAnim 2s ease-in-out infinite 3s;
+    }
+    @keyframes scrollAnim {
+      0%,100% { transform: scaleY(1); opacity:0.4; }
+      50%      { transform: scaleY(0.6); opacity:1; }
     }
 
-    .hero-catch strong {
-      color: var(--accent);
-      font-weight: 500;
-    }
-
-    .hero-btns {
-      display: flex; gap: 20px; justify-content: center;
-      opacity: 0;
-      animation: fadeUp 1s ease forwards 3s;
-    }
-
-    .btn-primary {
-      padding: 16px 48px;
-      background: linear-gradient(135deg, var(--accent2), var(--accent));
-      color: var(--white); text-decoration: none;
-      font-family: 'Exo 2', sans-serif; font-weight: 600;
-      font-size: 0.9rem; letter-spacing: 3px; text-transform: uppercase;
-      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
-      transition: opacity 0.3s, transform 0.3s;
-    }
-    .btn-primary:hover { opacity: 0.85; transform: translateY(-2px); }
-
-    .btn-outline {
-      padding: 16px 48px;
-      border: 1px solid rgba(255,255,255,0.3);
-      color: var(--white); text-decoration: none;
-      font-family: 'Exo 2', sans-serif; font-weight: 400;
-      font-size: 0.9rem; letter-spacing: 3px; text-transform: uppercase;
-      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
-      transition: border-color 0.3s, color 0.3s, transform 0.3s;
-    }
-    .btn-outline:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
-
-    .scroll-indicator {
-      position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
-      display: flex; flex-direction: column; align-items: center; gap: 8px;
-      opacity: 0; animation: fadeUp 1s ease forwards 3.5s;
-    }
-    .scroll-indicator span {
-      font-family: 'Exo 2', sans-serif; font-size: 0.65rem;
-      letter-spacing: 3px; color: var(--gray); text-transform: uppercase;
-    }
-    .scroll-line {
-      width: 1px; height: 60px;
-      background: linear-gradient(to bottom, var(--accent), transparent);
-      animation: scrollPulse 2s ease-in-out infinite;
-    }
-    @keyframes scrollPulse {
-      0%, 100% { opacity: 0.3; } 50% { opacity: 1; }
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+    @keyframes heroFadeUp {
+      from { opacity:0; transform: translateY(24px); }
+      to   { opacity:1; transform: translateY(0); }
     }
 
     /* ─── SECTION BASE ─── */
-    section { padding: 100px 60px; }
-    .section-label {
-      font-family: 'Exo 2', sans-serif;
-      font-size: 0.75rem; letter-spacing: 5px; color: var(--accent);
-      text-transform: uppercase; margin-bottom: 16px;
+    .section-inner { max-width: 1200px; margin: 0 auto; }
+    .label {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.7rem; letter-spacing: 4px; color: var(--light);
+      text-transform: uppercase; margin-bottom: 20px;
     }
-    .section-title {
+    .heading-lg {
       font-family: 'Rajdhani', sans-serif;
-      font-size: clamp(32px, 5vw, 52px); font-weight: 700;
-      letter-spacing: 3px; margin-bottom: 24px;
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 600; letter-spacing: 2px; line-height: 1.1;
+      margin-bottom: 28px;
     }
-    .section-desc {
-      color: var(--gray); line-height: 1.9;
-      font-weight: 300; max-width: 600px;
-      font-size: 0.95rem;
+    .heading-md {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(22px, 3vw, 32px);
+      font-weight: 600; letter-spacing: 2px;
     }
-    .divider {
-      width: 60px; height: 2px;
-      background: linear-gradient(to right, var(--accent), transparent);
-      margin: 20px 0 40px;
+    .body-text {
+      color: var(--mid); line-height: 2;
+      font-size: 0.92rem; font-weight: 300;
+    }
+    hr.rule {
+      border: none; border-top: 1px solid var(--border);
+      margin: 0;
     }
 
-    /* ─── ABOUT ─── */
-    #about {
-      background: var(--navy-mid);
-      display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
-      align-items: center;
+    /* ─── ABOUT / STATEMENT ─── */
+    #statement {
+      padding: 120px 60px;
+      border-bottom: 1px solid var(--border);
     }
-    .about-stats {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+    #statement .section-inner {
+      display: grid; grid-template-columns: 1fr 2fr; gap: 80px;
+      align-items: start;
     }
-    .stat-box {
-      background: var(--navy-light);
-      padding: 40px 30px;
-      border: 1px solid var(--border);
-      position: relative; overflow: hidden;
-      transition: border-color 0.3s;
+    .statement-left { padding-top: 6px; }
+    .statement-right {}
+    .statement-quote {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: clamp(20px, 3vw, 30px);
+      font-weight: 300;
+      line-height: 2;
+      letter-spacing: 1px;
+      color: var(--black);
+      margin-bottom: 36px;
     }
-    .stat-box::after {
-      content: '';
-      position: absolute; bottom: 0; left: 0;
-      width: 100%; height: 2px;
-      background: linear-gradient(to right, var(--accent), transparent);
-      transform: scaleX(0); transform-origin: left;
-      transition: transform 0.4s;
-    }
-    .stat-box:hover::after { transform: scaleX(1); }
-    .stat-box:hover { border-color: var(--accent); }
-    .stat-num {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 3rem; font-weight: 700; color: var(--accent);
-      line-height: 1;
-    }
-    .stat-label {
-      font-size: 0.8rem; color: var(--gray);
-      margin-top: 8px; letter-spacing: 1px;
+    .statement-quote em {
+      font-style: normal;
+      border-bottom: 1px solid var(--black);
+      padding-bottom: 1px;
     }
 
     /* ─── SERVICES ─── */
-    #services { background: var(--navy); }
+    #services {
+      padding: 120px 60px;
+      background: var(--bg-off);
+    }
+    #services .section-inner {}
+    .services-header {
+      display: flex; justify-content: space-between; align-items: flex-end;
+      margin-bottom: 60px;
+    }
     .services-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 2px; margin-top: 60px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
     }
-    .service-card {
-      background: var(--navy-light);
-      padding: 48px 36px;
+    .service-item {
+      background: var(--bg);
+      padding: 52px 40px;
       border: 1px solid var(--border);
-      position: relative; overflow: hidden;
-      transition: transform 0.3s, border-color 0.3s;
+      transition: background 0.3s;
       cursor: default;
+      position: relative;
+      overflow: hidden;
     }
-    .service-card::before {
-      content: '';
-      position: absolute; top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: linear-gradient(135deg, rgba(0,200,255,0.04), transparent);
-      opacity: 0; transition: opacity 0.3s;
-    }
-    .service-card:hover::before { opacity: 1; }
-    .service-card:hover { transform: translateY(-4px); border-color: rgba(0,200,255,0.4); }
-    .service-icon {
-      width: 52px; height: 52px; margin-bottom: 28px;
-      color: var(--accent);
-    }
+    .service-item:hover { background: var(--black); }
+    .service-item:hover .service-title,
+    .service-item:hover .service-num,
+    .service-item:hover .service-desc { color: rgba(255,255,255,0.9); }
+    .service-item:hover .service-divider { background: rgba(255,255,255,0.2); }
     .service-num {
-      position: absolute; top: 24px; right: 24px;
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 4rem; font-weight: 700;
-      color: rgba(0,200,255,0.04);
-      line-height: 1;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.7rem; letter-spacing: 2px; color: var(--light);
+      margin-bottom: 28px;
+      transition: color 0.3s;
     }
     .service-title {
       font-family: 'Rajdhani', sans-serif;
-      font-size: 1.4rem; font-weight: 700;
-      letter-spacing: 2px; margin-bottom: 16px;
+      font-size: 1.4rem; font-weight: 600;
+      letter-spacing: 2px; margin-bottom: 20px;
+      transition: color 0.3s;
     }
-    .service-desc { color: var(--gray); font-size: 0.88rem; line-height: 1.8; }
+    .service-divider {
+      height: 1px; background: var(--border);
+      margin-bottom: 20px;
+      transition: background 0.3s;
+    }
+    .service-desc {
+      font-size: 0.85rem; line-height: 1.9;
+      color: var(--mid); transition: color 0.3s;
+    }
 
-    /* ─── CAD TOOLS ─── */
+    /* ─── TOOLS ─── */
     #tools {
-      background: var(--navy-mid);
-      text-align: center;
+      padding: 120px 60px;
+      border-bottom: 1px solid var(--border);
     }
-    .tools-grid {
-      display: flex; justify-content: center;
-      gap: 4px; margin-top: 60px; flex-wrap: wrap;
+    .tools-header {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 60px; align-items: end;
+      margin-bottom: 80px;
     }
-    .tool-card {
-      background: var(--navy-light);
+    .tools-list {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+    .tool-item {
+      padding: 52px 40px;
       border: 1px solid var(--border);
-      padding: 48px 56px;
-      display: flex; flex-direction: column;
-      align-items: center; gap: 20px;
-      transition: border-color 0.3s, transform 0.3s;
-      min-width: 220px;
+      transition: border-color 0.3s;
     }
-    .tool-card:hover { border-color: var(--accent); transform: translateY(-4px); }
-    .tool-icon {
-      width: 64px; height: 64px;
-      background: linear-gradient(135deg, var(--accent2), var(--accent));
-      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-      display: flex; align-items: center; justify-content: center;
+    .tool-item:hover { border-color: var(--black); }
+    .tool-abbr {
       font-family: 'Rajdhani', sans-serif;
-      font-size: 1.2rem; font-weight: 700; color: var(--white);
-      letter-spacing: 1px;
+      font-size: 2.5rem; font-weight: 700;
+      letter-spacing: 3px; color: var(--black);
+      margin-bottom: 16px;
+      line-height: 1;
     }
     .tool-name {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 1.3rem; font-weight: 700;
-      letter-spacing: 3px;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem; font-weight: 500;
+      letter-spacing: 1px; margin-bottom: 8px;
     }
-    .tool-type { color: var(--gray); font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; }
+    .tool-type { font-size: 0.78rem; color: var(--light); letter-spacing: 1px; }
 
-    /* ─── WORKFLOW ─── */
-    #workflow { background: var(--navy); }
-    .steps {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 0; margin-top: 60px;
-      position: relative;
+    /* ─── FLOW ─── */
+    #flow {
+      padding: 120px 60px;
+      background: var(--bg-dark);
     }
-    .steps::before {
-      content: '';
-      position: absolute; top: 32px; left: 0; right: 0; height: 1px;
-      background: linear-gradient(to right, transparent, var(--accent), transparent);
+    #flow .label { color: rgba(255,255,255,0.3); }
+    #flow .heading-lg { color: #fff; }
+    .flow-steps {
+      margin-top: 80px;
+      border-top: 1px solid rgba(255,255,255,0.1);
     }
-    .step { padding: 0 30px; text-align: center; }
-    .step-num {
-      width: 64px; height: 64px; margin: 0 auto 28px;
-      border: 1px solid var(--accent);
-      display: flex; align-items: center; justify-content: center;
+    .flow-step {
+      display: grid; grid-template-columns: 80px 1fr 1fr;
+      gap: 60px; align-items: start;
+      padding: 48px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .flow-step-num {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem; letter-spacing: 2px; color: rgba(255,255,255,0.3);
+      padding-top: 4px;
+    }
+    .flow-step-title {
       font-family: 'Rajdhani', sans-serif;
-      font-size: 1.6rem; font-weight: 700; color: var(--accent);
-      background: var(--navy);
-      position: relative; z-index: 1;
-      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      font-size: 1.3rem; font-weight: 600;
+      letter-spacing: 2px; color: #fff;
     }
-    .step-title {
-      font-family: 'Rajdhani', sans-serif;
-      font-size: 1.1rem; letter-spacing: 2px; margin-bottom: 12px;
+    .flow-step-desc {
+      font-size: 0.85rem; line-height: 1.9;
+      color: rgba(255,255,255,0.45);
     }
-    .step-desc { color: var(--gray); font-size: 0.82rem; line-height: 1.7; }
 
     /* ─── CONTACT ─── */
     #contact {
-      background: var(--navy-mid);
-      display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
-      align-items: start;
+      padding: 120px 60px;
     }
-    .contact-form {
-      display: flex; flex-direction: column; gap: 16px;
+    #contact .section-inner {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 100px;
     }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    .form-group { display: flex; flex-direction: column; gap: 8px; }
-    .form-group label {
-      font-family: 'Exo 2', sans-serif;
-      font-size: 0.75rem; letter-spacing: 2px; color: var(--gray);
+    .contact-left {}
+    .contact-tagline {
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: clamp(18px, 2.5vw, 24px);
+      font-weight: 300; line-height: 2;
+      color: var(--black); margin-bottom: 48px;
+    }
+    .contact-info-item {
+      margin-bottom: 28px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--border);
+    }
+    .contact-info-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.7rem; letter-spacing: 3px; color: var(--light);
+      text-transform: uppercase; margin-bottom: 8px;
+    }
+    .contact-info-value { font-size: 0.92rem; color: var(--black); }
+
+    .contact-form { display: flex; flex-direction: column; gap: 0; }
+    .form-field {
+      border-bottom: 1px solid var(--border);
+      padding: 20px 0;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .form-field label {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.68rem; letter-spacing: 3px; color: var(--light);
       text-transform: uppercase;
     }
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      background: var(--navy);
-      border: 1px solid var(--border);
-      color: var(--white);
-      padding: 14px 18px;
+    .form-field input,
+    .form-field select,
+    .form-field textarea {
+      background: none; border: none; outline: none;
       font-family: 'Noto Sans JP', sans-serif;
-      font-size: 0.9rem;
-      outline: none;
-      transition: border-color 0.3s;
+      font-size: 0.9rem; font-weight: 300;
+      color: var(--black); padding: 4px 0;
       -webkit-appearance: none;
     }
-    .form-group select option { background: var(--navy); }
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus { border-color: var(--accent); }
-    .form-group textarea { resize: vertical; min-height: 140px; }
+    .form-field select option { background: var(--bg); }
+    .form-field textarea { resize: none; min-height: 100px; }
+    .form-field input::placeholder,
+    .form-field textarea::placeholder { color: var(--border); }
     .form-submit {
-      margin-top: 8px;
-      padding: 18px;
-      background: linear-gradient(135deg, var(--accent2), var(--accent));
-      color: var(--white); border: none; cursor: pointer;
-      font-family: 'Exo 2', sans-serif; font-size: 0.9rem;
-      font-weight: 600; letter-spacing: 4px; text-transform: uppercase;
-      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
-      transition: opacity 0.3s, transform 0.3s;
+      margin-top: 40px;
+      display: flex; align-items: center; gap: 20px;
+      background: none; border: none; cursor: pointer;
+      padding: 0;
     }
-    .form-submit:hover { opacity: 0.85; transform: translateY(-2px); }
-
-    .contact-info { padding-top: 20px; }
-    .info-item {
-      display: flex; gap: 20px; align-items: flex-start;
-      margin-bottom: 36px;
+    .form-submit-text {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--black);
+      border-bottom: 1px solid var(--black);
+      padding-bottom: 2px;
+      transition: opacity 0.3s;
     }
-    .info-icon {
-      width: 48px; height: 48px; flex-shrink: 0;
-      border: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      color: var(--accent);
+    .form-submit-arrow {
+      width: 32px; height: 1px; background: var(--black);
+      position: relative; transition: width 0.3s;
     }
-    .info-label {
-      font-family: 'Exo 2', sans-serif;
-      font-size: 0.7rem; letter-spacing: 3px; color: var(--gray);
-      text-transform: uppercase; margin-bottom: 6px;
+    .form-submit-arrow::after {
+      content: ''; position: absolute; right: 0; top: -4px;
+      width: 8px; height: 8px;
+      border-top: 1px solid var(--black);
+      border-right: 1px solid var(--black);
+      transform: rotate(45deg);
     }
-    .info-value { font-size: 0.9rem; color: var(--white); }
-
-    /* success message */
+    .form-submit:hover .form-submit-arrow { width: 48px; }
+    .form-submit:hover .form-submit-text { opacity: 0.5; }
     .form-success {
-      display: none;
-      padding: 20px;
-      border: 1px solid var(--accent);
-      color: var(--accent);
-      font-family: 'Exo 2', sans-serif;
-      letter-spacing: 2px;
-      text-align: center;
-      margin-top: 16px;
+      display: none; margin-top: 24px;
+      font-family: 'Noto Sans JP', sans-serif;
+      font-size: 0.85rem; color: var(--mid);
+      letter-spacing: 1px;
     }
 
     /* ─── FOOTER ─── */
     footer {
-      background: var(--navy);
-      border-top: 1px solid var(--border);
-      padding: 48px 60px;
+      background: var(--bg-dark);
+      padding: 60px;
       display: flex; align-items: center; justify-content: space-between;
     }
     .footer-logo {
       font-family: 'Rajdhani', sans-serif;
-      font-size: 1.4rem; font-weight: 700; letter-spacing: 4px;
+      font-size: 1.3rem; font-weight: 700;
+      letter-spacing: 5px; color: rgba(255,255,255,0.8);
     }
-    .footer-logo span { color: var(--accent); }
-    .footer-copy {
-      color: var(--gray); font-size: 0.75rem; letter-spacing: 1px;
+    .footer-links {
+      display: flex; gap: 32px; list-style: none;
     }
-    .footer-links { display: flex; gap: 28px; }
     .footer-links a {
-      color: var(--gray); text-decoration: none;
-      font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.72rem; letter-spacing: 2px; text-transform: uppercase;
+      color: rgba(255,255,255,0.3); text-decoration: none;
       transition: color 0.3s;
     }
-    .footer-links a:hover { color: var(--accent); }
+    .footer-links a:hover { color: rgba(255,255,255,0.8); }
+    .footer-copy {
+      font-size: 0.72rem; color: rgba(255,255,255,0.2);
+      letter-spacing: 1px;
+    }
 
-    /* ─── REVEAL ANIMATION ─── */
+    /* ─── REVEAL ─── */
     .reveal {
-      opacity: 0; transform: translateY(30px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
     }
     .reveal.visible { opacity: 1; transform: translateY(0); }
 
     /* ─── RESPONSIVE ─── */
     @media (max-width: 900px) {
-      nav { padding: 16px 24px; }
+      nav { padding: 20px 24px; }
       .nav-links { display: none; }
-      section { padding: 80px 24px; }
-      #about, #contact { grid-template-columns: 1fr; gap: 48px; }
-      footer { flex-direction: column; gap: 20px; text-align: center; }
-      .steps::before { display: none; }
+      #hero { padding: 0 24px 60px; }
+      #statement, #services, #tools, #flow, #contact { padding: 80px 24px; }
+      #statement .section-inner,
+      #contact .section-inner { grid-template-columns: 1fr; gap: 48px; }
+      .services-grid, .tools-list { grid-template-columns: 1fr; }
+      .flow-step { grid-template-columns: 40px 1fr; }
+      .flow-step-desc { display: none; }
+      .services-header, .tools-header { flex-direction: column; gap: 16px; }
+      .tools-header { grid-template-columns: 1fr; gap: 24px; }
+      footer { flex-direction: column; gap: 24px; text-align: center; }
     }
   </style>
 </head>
 <body>
 
 <!-- ─── NAV ─── -->
-<nav>
-  <a class="nav-logo" href="#"><span>T</span>RIDIAL</a>
+<nav id="mainNav">
+  <a class="nav-logo" href="#">TRIDIAL</a>
   <ul class="nav-links">
-    <li><a href="#about">About</a></li>
+    <li><a href="#statement">About</a></li>
     <li><a href="#services">Services</a></li>
     <li><a href="#tools">Tools</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="#flow">Process</a></li>
   </ul>
-  <a class="nav-cta" href="#contact">お問い合わせ</a>
+  <a class="nav-contact" href="#contact">Contact</a>
 </nav>
 
 <!-- ─── HERO ─── -->
 <section id="hero">
-  <div class="hero-content">
-    <div id="hero-logo-wrap">
-      <!-- Paper airplane SVG -->
-      <svg class="paper-plane" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <polygon points="0,30 60,0 42,60" fill="white" opacity="0.9"/>
-        <polygon points="0,30 60,0 30,36" fill="rgba(0,200,255,0.6)"/>
-        <line x1="42" y1="60" x2="30" y2="36" stroke="rgba(0,200,255,0.4)" stroke-width="1"/>
-      </svg>
-      <div class="hero-brand">TRIDIAL</div>
-    </div>
-    <div class="hero-sub">3D Engineering &amp; Design</div>
-    <div class="hero-catch">角度を変えれば、<strong>答えが見える</strong></div>
-    <div class="hero-btns">
-      <a class="btn-primary" href="#services">サービスを見る</a>
-      <a class="btn-outline" href="#contact">無料相談</a>
-    </div>
+  <div class="hero-bg">
+    <canvas id="heroCanvas"></canvas>
   </div>
-  <div class="scroll-indicator">
-    <div class="scroll-line"></div>
-    <span>Scroll</span>
+
+  <div class="hero-logo-center">
+    <div class="hero-brand-text">
+      <!-- paper plane SVG -->
+      <svg class="hero-plane" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="0,28 52,0 36,52" fill="white" opacity="0.85"/>
+        <polygon points="0,28 52,0 26,32" fill="rgba(180,210,255,0.5)"/>
+      </svg>
+      TRIDIAL
+    </div>
+    <div class="hero-sub-text">3D Engineering &amp; Design</div>
+  </div>
+
+  <div class="hero-bottom">
+    <div class="hero-catch">
+      <div class="hero-catch-jp">角度を変えれば、答えが見える</div>
+      <div class="hero-catch-en">Change your angle, find your answer</div>
+    </div>
+    <div class="hero-scroll">
+      <div class="hero-scroll-line"></div>
+      <span>Scroll</span>
+    </div>
   </div>
 </section>
 
-<!-- ─── ABOUT ─── -->
-<section id="about">
-  <div class="reveal">
-    <div class="section-label">About TRIDIAL</div>
-    <h2 class="section-title">3Dの力で、<br>ものづくりを加速する</h2>
-    <div class="divider"></div>
-    <p class="section-desc">
-      TRIDIALは中小企業・個人事業主の機械設計課題を3D技術で解決する専門スタジオです。装置・治具設計からプロダクトデザイン、3Dプリントまでをワンストップで対応。業界トップレベルのCADツールを駆使し、お客様のアイデアを素早く形にします。
-    </p>
-    <br><br>
-    <p class="section-desc">
-      複雑な形状も、難しい制約も——視点を変えることで、必ず答えは見えてきます。
-    </p>
-  </div>
-  <div class="about-stats reveal">
-    <div class="stat-box">
-      <div class="stat-num">3</div>
-      <div class="stat-label">対応CADソフト</div>
+<!-- ─── STATEMENT ─── -->
+<section id="statement">
+  <div class="section-inner">
+    <div class="statement-left reveal">
+      <div class="label">About</div>
+      <div class="heading-md">TRIDIALとは</div>
     </div>
-    <div class="stat-box">
-      <div class="stat-num">5+</div>
-      <div class="stat-label">対応サービス領域</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-num">短納期</div>
-      <div class="stat-label">スピード対応</div>
-    </div>
-    <div class="stat-box">
-      <div class="stat-num">個別</div>
-      <div class="stat-label">完全オーダーメイド</div>
+    <div class="statement-right reveal">
+      <p class="statement-quote">
+        設計の課題に、<em>3Dの視点</em>で<br>新しい答えを届ける。
+      </p>
+      <p class="body-text">
+        TRIDIALは機械設計を専門とする3Dエンジニアリングスタジオです。<br>
+        装置・治具設計から図面作成、プロダクトデザイン、3Dプリントまで——<br>
+        中小企業・個人事業主のものづくりを、フルワンストップで支援します。<br><br>
+        業界トップレベルのCADを複数習熟し、<br>
+        どんな複雑な形状も、難しい制約も、必ず最適解へ導きます。
+      </p>
     </div>
   </div>
 </section>
 
 <!-- ─── SERVICES ─── -->
 <section id="services">
-  <div class="reveal" style="text-align:center; max-width:none;">
-    <div class="section-label" style="display:inline-block;">Services</div>
-    <h2 class="section-title">提供サービス</h2>
-    <div class="divider" style="margin:20px auto 0;"></div>
-  </div>
-  <div class="services-grid">
-    <div class="service-card reveal">
-      <div class="service-num">01</div>
-      <svg class="service-icon" viewBox="0 0 52 52" fill="none">
-        <rect x="4" y="14" width="44" height="30" rx="1" stroke="currentColor" stroke-width="1.5"/>
-        <path d="M4 22h44M16 14V8M36 14V8" stroke="currentColor" stroke-width="1.5"/>
-        <rect x="12" y="28" width="8" height="10" stroke="currentColor" stroke-width="1.5"/>
-        <path d="M26 30h12M26 36h8" stroke="currentColor" stroke-width="1.5"/>
-      </svg>
-      <div class="service-title">装置・治具設計</div>
-      <p class="service-desc">生産ラインの自動化装置、検査冶具、専用工具など、用途に合わせた機械設計を提供します。機能性と製造コストを両立した実用的な設計が強みです。</p>
+  <div class="section-inner">
+    <div class="services-header reveal">
+      <div>
+        <div class="label">Services</div>
+        <div class="heading-lg">提供サービス</div>
+      </div>
     </div>
-    <div class="service-card reveal">
-      <div class="service-num">02</div>
-      <svg class="service-icon" viewBox="0 0 52 52" fill="none">
-        <path d="M8 44V12l10-8h26v40H8z" stroke="currentColor" stroke-width="1.5"/>
-        <path d="M8 12h10V4" stroke="currentColor" stroke-width="1.5"/>
-        <path d="M16 22h22M16 30h22M16 38h12" stroke="currentColor" stroke-width="1.5"/>
-      </svg>
-      <div class="service-title">図面作成</div>
-      <p class="service-desc">JIS規格に準拠した製作図・組立図・部品図を作成します。加工指示・公差・溶接記号など製造現場で即使用できる品質の図面を提供します。</p>
-    </div>
-    <div class="service-card reveal">
-      <div class="service-num">03</div>
-      <svg class="service-icon" viewBox="0 0 52 52" fill="none">
-        <path d="M26 6l20 14v16L26 50 6 36V20L26 6z" stroke="currentColor" stroke-width="1.5"/>
-        <path d="M26 6v44M6 20l20 14 20-14" stroke="currentColor" stroke-width="1.5"/>
-      </svg>
-      <div class="service-title">プロダクトデザイン</div>
-      <p class="service-desc">機能美を追求したプロダクトデザイン。工業製品から消費者向け製品まで、使いやすさとブランド価値を高めるデザインを提案します。</p>
-    </div>
-    <div class="service-card reveal">
-      <div class="service-num">04</div>
-      <svg class="service-icon" viewBox="0 0 52 52" fill="none">
-        <path d="M10 38L26 10l16 28H10z" stroke="currentColor" stroke-width="1.5"/>
-        <circle cx="26" cy="30" r="8" stroke="currentColor" stroke-width="1.5"/>
-        <path d="M26 22v-8M26 38v4M18 30H10M34 30h8" stroke="currentColor" stroke-width="1.5" opacity="0.5"/>
-      </svg>
-      <div class="service-title">3Dモデル作成</div>
-      <p class="service-desc">既存製品のリバースエンジニアリングから新規形状の3Dモデリングまで対応。プレゼン用の高品質レンダリングも提供可能です。</p>
-    </div>
-    <div class="service-card reveal">
-      <div class="service-num">05</div>
-      <svg class="service-icon" viewBox="0 0 52 52" fill="none">
-        <rect x="10" y="26" width="32" height="18" rx="1" stroke="currentColor" stroke-width="1.5"/>
-        <path d="M18 26V20a8 8 0 0116 0v6" stroke="currentColor" stroke-width="1.5"/>
-        <path d="M20 34h4M28 34h4M20 38h2" stroke="currentColor" stroke-width="1.5"/>
-      </svg>
-      <div class="service-title">3Dプリント</div>
-      <p class="service-desc">試作品・治具・最終部品まで3Dプリントで対応。FDM・樹脂素材への対応はもちろん、プリント用データ最適化まで含めてサポートします。</p>
+    <div class="services-grid">
+
+      <div class="service-item reveal">
+        <div class="service-num">01</div>
+        <div class="service-title">装置・治具設計</div>
+        <div class="service-divider"></div>
+        <p class="service-desc">生産ラインの自動化装置、検査冶具、専用工具など、用途に合わせた機械設計を提供します。機能性と製造コストを両立した実用的な設計が強みです。</p>
+      </div>
+
+      <div class="service-item reveal">
+        <div class="service-num">02</div>
+        <div class="service-title">図面作成</div>
+        <div class="service-divider"></div>
+        <p class="service-desc">JIS規格に準拠した製作図・組立図・部品図を作成します。加工指示・公差・溶接記号など製造現場で即使用できる品質の図面を提供します。</p>
+      </div>
+
+      <div class="service-item reveal">
+        <div class="service-num">03</div>
+        <div class="service-title">プロダクトデザイン</div>
+        <div class="service-divider"></div>
+        <p class="service-desc">機能美を追求したプロダクトデザイン。工業製品から消費者向け製品まで、使いやすさとブランド価値を高めるデザインを提案します。</p>
+      </div>
+
+      <div class="service-item reveal">
+        <div class="service-num">04</div>
+        <div class="service-title">3Dモデル作成</div>
+        <div class="service-divider"></div>
+        <p class="service-desc">既存製品のリバースエンジニアリングから新規形状の3Dモデリングまで対応。プレゼン用の高品質レンダリングも提供可能です。</p>
+      </div>
+
+      <div class="service-item reveal">
+        <div class="service-num">05</div>
+        <div class="service-title">3Dプリント</div>
+        <div class="service-divider"></div>
+        <p class="service-desc">試作品・治具・最終部品まで3Dプリントで対応。プリント用データ最適化から出力・仕上げまで含めてサポートします。</p>
+      </div>
+
     </div>
   </div>
 </section>
 
-<!-- ─── CAD TOOLS ─── -->
+<!-- ─── TOOLS ─── -->
 <section id="tools">
-  <div class="reveal">
-    <div class="section-label">Technology</div>
-    <h2 class="section-title">使用CADツール</h2>
-    <div class="divider" style="margin: 20px auto;"></div>
-    <p class="section-desc" style="margin: 0 auto;">業界標準のCADソフトウェアを複数習熟しており、お客様の環境に合わせたデータ形式で納品が可能です。</p>
-  </div>
-  <div class="tools-grid reveal">
-    <div class="tool-card">
-      <div class="tool-icon">TS</div>
-      <div class="tool-name">TopSolid</div>
-      <div class="tool-type">Manufacturing CAD</div>
+  <div class="section-inner">
+    <div class="tools-header reveal">
+      <div>
+        <div class="label">Technology</div>
+        <div class="heading-lg">使用CADツール</div>
+      </div>
+      <p class="body-text">業界標準のCADソフトウェアを複数習熟しており、お客様の環境に合わせたデータ形式での納品が可能です。</p>
     </div>
-    <div class="tool-card">
-      <div class="tool-icon">SW</div>
-      <div class="tool-name">SolidWorks</div>
-      <div class="tool-type">Parametric CAD</div>
-    </div>
-    <div class="tool-card">
-      <div class="tool-icon">F3</div>
-      <div class="tool-name">Fusion 360</div>
-      <div class="tool-type">Cloud CAD/CAM</div>
+    <div class="tools-list">
+      <div class="tool-item reveal">
+        <div class="tool-abbr">TS</div>
+        <div class="tool-name">TopSolid</div>
+        <div class="tool-type">Manufacturing CAD</div>
+      </div>
+      <div class="tool-item reveal">
+        <div class="tool-abbr">SW</div>
+        <div class="tool-name">SolidWorks</div>
+        <div class="tool-type">Parametric CAD</div>
+      </div>
+      <div class="tool-item reveal">
+        <div class="tool-abbr">F3</div>
+        <div class="tool-name">Fusion 360</div>
+        <div class="tool-type">Cloud CAD / CAM</div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ─── WORKFLOW ─── -->
-<section id="workflow">
-  <div class="reveal" style="text-align:center;">
-    <div class="section-label">Process</div>
-    <h2 class="section-title">対応フロー</h2>
-    <div class="divider" style="margin: 20px auto;"></div>
-  </div>
-  <div class="steps">
-    <div class="step reveal">
-      <div class="step-num">01</div>
-      <div class="step-title">お問い合わせ</div>
-      <p class="step-desc">フォームまたはメールでご相談内容をお送りください。24時間以内に返信します。</p>
+<!-- ─── FLOW ─── -->
+<section id="flow">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="label">Process</div>
+      <div class="heading-lg" style="color:#fff;">対応フロー</div>
     </div>
-    <div class="step reveal">
-      <div class="step-num">02</div>
-      <div class="step-title">ヒアリング</div>
-      <p class="step-desc">要件・仕様・スケジュール・予算などを詳しくヒアリングします。</p>
-    </div>
-    <div class="step reveal">
-      <div class="step-num">03</div>
-      <div class="step-title">提案・見積</div>
-      <p class="step-desc">最適な設計アプローチと納期・費用の見積もりを提出します。</p>
-    </div>
-    <div class="step reveal">
-      <div class="step-num">04</div>
-      <div class="step-title">設計・制作</div>
-      <p class="step-desc">進捗を共有しながら設計を進めます。途中フィードバックも歓迎です。</p>
-    </div>
-    <div class="step reveal">
-      <div class="step-num">05</div>
-      <div class="step-title">納品</div>
-      <p class="step-desc">図面・3Dデータを指定形式で納品。アフターフォローも対応します。</p>
+    <div class="flow-steps">
+      <div class="flow-step reveal">
+        <div class="flow-step-num">01</div>
+        <div class="flow-step-title">お問い合わせ</div>
+        <div class="flow-step-desc">フォームまたはメールでご相談内容をお送りください。24時間以内に返信します。</div>
+      </div>
+      <div class="flow-step reveal">
+        <div class="flow-step-num">02</div>
+        <div class="flow-step-title">ヒアリング</div>
+        <div class="flow-step-desc">要件・仕様・スケジュール・予算などを詳しくヒアリングします。</div>
+      </div>
+      <div class="flow-step reveal">
+        <div class="flow-step-num">03</div>
+        <div class="flow-step-title">提案・見積</div>
+        <div class="flow-step-desc">最適な設計アプローチと納期・費用の見積もりを提出します。</div>
+      </div>
+      <div class="flow-step reveal">
+        <div class="flow-step-num">04</div>
+        <div class="flow-step-title">設計・制作</div>
+        <div class="flow-step-desc">進捗を共有しながら設計を進めます。途中フィードバックも歓迎です。</div>
+      </div>
+      <div class="flow-step reveal">
+        <div class="flow-step-num">05</div>
+        <div class="flow-step-title">納品</div>
+        <div class="flow-step-desc">図面・3Dデータを指定形式で納品。アフターフォローも対応します。</div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- ─── CONTACT ─── -->
 <section id="contact">
-  <div class="reveal">
-    <div class="section-label">Contact</div>
-    <h2 class="section-title">お問い合わせ</h2>
-    <div class="divider"></div>
-    <p class="section-desc">設計のご相談、お見積もりはお気軽にどうぞ。内容を確認後、担当者より24時間以内にご連絡します。</p>
-    <br><br>
-    <div class="info-item">
-      <div class="info-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M4 4h16v16H4z" rx="2"/><path d="M4 8l8 5 8-5"/>
-        </svg>
+  <div class="section-inner">
+    <div class="contact-left reveal">
+      <div class="label">Contact</div>
+      <div class="heading-lg">お問い合わせ</div>
+      <p class="contact-tagline">
+        設計のご相談、お見積もりは<br>お気軽にどうぞ。
+      </p>
+      <div class="contact-info-item">
+        <div class="contact-info-label">Email</div>
+        <div class="contact-info-value">contact@tridial.jp</div>
       </div>
-      <div>
-        <div class="info-label">Email</div>
-        <div class="info-value">contact@tridial.jp</div>
+      <div class="contact-info-item">
+        <div class="contact-info-label">対応エリア</div>
+        <div class="contact-info-value">全国対応（リモート）</div>
       </div>
-    </div>
-    <div class="info-item">
-      <div class="info-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/>
-        </svg>
-      </div>
-      <div>
-        <div class="info-label">対応エリア</div>
-        <div class="info-value">全国対応（リモート）</div>
+      <div class="contact-info-item">
+        <div class="contact-info-label">返信時間</div>
+        <div class="contact-info-value">24時間以内（平日）</div>
       </div>
     </div>
-    <div class="info-item">
-      <div class="info-icon">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
-        </svg>
-      </div>
-      <div>
-        <div class="info-label">返信時間</div>
-        <div class="info-value">24時間以内（平日）</div>
-      </div>
-    </div>
-  </div>
 
-  <div class="reveal">
-    <form class="contact-form" id="contactForm">
-      <div class="form-row">
-        <div class="form-group">
+    <div class="reveal">
+      <form class="contact-form" id="contactForm">
+        <div class="form-field">
           <label>お名前 *</label>
           <input type="text" name="name" required placeholder="山田 太郎">
         </div>
-        <div class="form-group">
+        <div class="form-field">
           <label>会社名</label>
           <input type="text" name="company" placeholder="株式会社〇〇">
         </div>
-      </div>
-      <div class="form-group">
-        <label>メールアドレス *</label>
-        <input type="email" name="email" required placeholder="example@company.co.jp">
-      </div>
-      <div class="form-group">
-        <label>お問い合わせ種別</label>
-        <select name="type">
-          <option value="">選択してください</option>
-          <option>装置・治具設計</option>
-          <option>図面作成</option>
-          <option>プロダクトデザイン</option>
-          <option>3Dモデル作成</option>
-          <option>3Dプリント</option>
-          <option>その他</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>お問い合わせ内容 *</label>
-        <textarea name="message" required placeholder="ご依頼内容・仕様・納期などをお知らせください。"></textarea>
-      </div>
-      <button type="submit" class="form-submit">送信する →</button>
-      <div class="form-success" id="formSuccess">
-        お問い合わせを受け付けました。担当者より連絡いたします。
-      </div>
-    </form>
+        <div class="form-field">
+          <label>メールアドレス *</label>
+          <input type="email" name="email" required placeholder="example@company.co.jp">
+        </div>
+        <div class="form-field">
+          <label>お問い合わせ種別</label>
+          <select name="type">
+            <option value="">選択してください</option>
+            <option>装置・治具設計</option>
+            <option>図面作成</option>
+            <option>プロダクトデザイン</option>
+            <option>3Dモデル作成</option>
+            <option>3Dプリント</option>
+            <option>その他</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>お問い合わせ内容 *</label>
+          <textarea name="message" required placeholder="ご依頼内容・仕様・納期などをお知らせください。"></textarea>
+        </div>
+        <button type="submit" class="form-submit">
+          <span class="form-submit-text">送信する</span>
+          <span class="form-submit-arrow"></span>
+        </button>
+        <div class="form-success" id="formSuccess">
+          お問い合わせを受け付けました。担当者よりご連絡いたします。
+        </div>
+      </form>
+    </div>
   </div>
 </section>
 
 <!-- ─── FOOTER ─── -->
 <footer>
-  <div class="footer-logo"><span>T</span>RIDIAL</div>
-  <div class="footer-copy">© 2024 TRIDIAL 3D Engineering & Design. All rights reserved.</div>
-  <div class="footer-links">
-    <a href="#about">About</a>
-    <a href="#services">Services</a>
-    <a href="#contact">Contact</a>
-  </div>
+  <div class="footer-logo">TRIDIAL</div>
+  <ul class="footer-links">
+    <li><a href="#statement">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#tools">Tools</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="footer-copy">© 2024 TRIDIAL 3D Engineering & Design</div>
 </footer>
 
 <script>
-  // ─── Reveal on scroll ───
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((e, i) => {
-      if (e.isIntersecting) {
-        setTimeout(() => e.target.classList.add('visible'), i * 80);
-        observer.unobserve(e.target);
+// ─── Hero canvas: floating wireframe nodes ───
+const canvas = document.getElementById('heroCanvas');
+const ctx = canvas.getContext('2d');
+let W, H, nodes;
+
+function resize() {
+  W = canvas.width  = canvas.offsetWidth;
+  H = canvas.height = canvas.offsetHeight;
+}
+
+function initNodes() {
+  nodes = Array.from({length: 55}, () => ({
+    x: Math.random() * W,
+    y: Math.random() * H,
+    vx: (Math.random() - 0.5) * 0.4,
+    vy: (Math.random() - 0.5) * 0.4,
+    r: Math.random() * 1.5 + 0.5,
+  }));
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  // connections
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const dx = nodes[i].x - nodes[j].x;
+      const dy = nodes[i].y - nodes[j].y;
+      const d  = Math.sqrt(dx*dx + dy*dy);
+      if (d < 140) {
+        ctx.beginPath();
+        ctx.moveTo(nodes[i].x, nodes[i].y);
+        ctx.lineTo(nodes[j].x, nodes[j].y);
+        ctx.strokeStyle = `rgba(100,140,200,${0.15 * (1 - d/140)})`;
+        ctx.lineWidth = 0.5;
+        ctx.stroke();
       }
-    });
-  }, { threshold: 0.1 });
-  reveals.forEach(el => observer.observe(el));
-
-  // ─── Nav shrink on scroll ───
-  window.addEventListener('scroll', () => {
-    const nav = document.querySelector('nav');
-    nav.style.padding = window.scrollY > 50 ? '12px 60px' : '20px 60px';
+    }
+  }
+  // dots
+  nodes.forEach(n => {
+    ctx.beginPath();
+    ctx.arc(n.x, n.y, n.r, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(120,160,220,0.35)';
+    ctx.fill();
+    n.x += n.vx; n.y += n.vy;
+    if (n.x < 0 || n.x > W) n.vx *= -1;
+    if (n.y < 0 || n.y > H) n.vy *= -1;
   });
+  requestAnimationFrame(draw);
+}
 
-  // ─── Contact form submit ───
-  document.getElementById('contactForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const btn = this.querySelector('.form-submit');
-    btn.textContent = '送信中...';
-    btn.disabled = true;
-    setTimeout(() => {
-      document.getElementById('formSuccess').style.display = 'block';
-      btn.style.display = 'none';
-      this.reset();
-    }, 1200);
+window.addEventListener('resize', () => { resize(); initNodes(); });
+resize(); initNodes(); draw();
+
+// ─── Nav scroll ───
+window.addEventListener('scroll', () => {
+  document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 40);
+});
+
+// ─── Scroll reveal ───
+const revealEls = document.querySelectorAll('.reveal');
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 60);
+      obs.unobserve(e.target);
+    }
   });
+}, { threshold: 0.08 });
+revealEls.forEach(el => obs.observe(el));
+
+// ─── Contact form ───
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const btn = this.querySelector('.form-submit');
+  btn.style.opacity = '0.4';
+  btn.disabled = true;
+  setTimeout(() => {
+    document.getElementById('formSuccess').style.display = 'block';
+    btn.style.display = 'none';
+    this.reset();
+  }, 1000);
+});
 </script>
 </body>
 </html>
