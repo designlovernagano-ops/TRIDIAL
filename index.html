@@ -106,43 +106,51 @@
       z-index: 2;
     }
 
-    .hero-brand-text {
-      opacity: 0;
-      animation: heroFadeUp 1.4s cubic-bezier(0.16,1,0.3,1) forwards 0.3s;
-      position: relative;
+    /* ── SVG logo animation (4 stages) ──
+       1. letters: outline draws in
+       2. letters: fill floods in
+       3. plane: flies in from bottom-left
+       4. subtitle: writes on left-to-right           */
+    #logo-anim-wrap {
+      width: clamp(300px, 46vw, 620px);
+      color: #fff;
     }
-    .hero-brand-text img {
-      height: clamp(60px, 9vw, 110px);
-      width: auto;
-      filter: brightness(0) invert(1);
-      display: block;
+    #logo-anim-wrap svg { width: 100%; height: auto; display: block; overflow: visible; }
+
+    /* stage 1+2 — letters */
+    #lg-letters path {
+      fill-opacity: 0;
+      stroke: #fff;
+      stroke-width: 1.2;
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      animation:
+        lgDraw 1.6s cubic-bezier(0.4,0,0.2,1) forwards 0.3s,
+        lgFill 1.1s ease forwards 1.7s,
+        lgStrokeOut 1.1s ease forwards 1.7s;
+    }
+    @keyframes lgDraw   { to { stroke-dashoffset: 0; } }
+    @keyframes lgFill   { to { fill-opacity: 1; } }
+    @keyframes lgStrokeOut { to { stroke-opacity: 0; } }
+
+    /* stage 3 — paper plane */
+    #lg-plane {
+      opacity: 0;
+      animation: lgPlane 1.3s cubic-bezier(0.22,1,0.36,1) forwards 2.6s;
+    }
+    @keyframes lgPlane {
+      0%   { opacity: 0; transform: translate(-420px, 320px) rotate(-14deg); }
+      65%  { opacity: 1; transform: translate(18px, -14px) rotate(3deg); }
+      100% { opacity: 1; transform: translate(0, 0) rotate(0deg); }
     }
 
-    /* paper plane */
-    .hero-plane {
-      position: absolute;
-      top: -8px; left: 4px;
-      width: 52px; height: 52px;
-      opacity: 0;
-      animation: planeIn 1.6s cubic-bezier(0.16,1,0.3,1) forwards 1.2s;
+    /* stage 4 — subtitle write-on */
+    #lg-sub {
+      fill-opacity: 1;
+      clip-path: inset(0 100% 0 0);
+      animation: lgWrite 1.6s cubic-bezier(0.4,0,0.2,1) forwards 3.6s;
     }
-
-    @keyframes planeIn {
-      0%   { opacity:0; transform: translate(-300px, 200px) rotate(-20deg) scale(0.4); }
-      70%  { opacity:1; transform: translate(4px, -6px) rotate(-16deg) scale(1.05); }
-      100% { opacity:1; transform: translate(0,0) rotate(-18deg) scale(1); }
-    }
-
-    .hero-sub-text {
-      font-family: 'Inter', sans-serif;
-      font-size: clamp(9px, 1.2vw, 11px);
-      letter-spacing: 6px;
-      color: rgba(255,255,255,0.45);
-      text-transform: uppercase;
-      opacity: 0;
-      animation: heroFadeUp 1s ease forwards 1.6s;
-      margin-top: 12px;
-    }
+    @keyframes lgWrite { to { clip-path: inset(0 0 0 0); } }
 
     /* hero bottom copy */
     .hero-bottom {
@@ -731,10 +739,7 @@
   </div>
 
   <div class="hero-logo-center">
-    <div class="hero-brand-text">
-      <img src="logo.svg" alt="TRIDIAL">
-    </div>
-    <div class="hero-sub-text">3D Engineering &amp; Design</div>
+    <div id="logo-anim-wrap" role="img" aria-label="TRIDIAL — 3D Engineering &amp; Design"></div>
   </div>
 
   <div class="hero-bottom">
@@ -998,6 +1003,16 @@
 </footer>
 
 <script>
+// ─── Inline the animated logo SVG (needed so CSS can reach its groups) ───
+fetch('logo-anim.svg')
+  .then(r => r.text())
+  .then(svg => {
+    const wrap = document.getElementById('logo-anim-wrap');
+    wrap.innerHTML = svg;
+    // normalize every letter path to pathLength=1 so the dash draw is uniform
+    wrap.querySelectorAll('#lg-letters path').forEach(p => p.setAttribute('pathLength', '1'));
+  });
+
 // ─── Custom cursor ───
 const dot  = document.getElementById('cursor-dot');
 const ring = document.getElementById('cursor-ring');
